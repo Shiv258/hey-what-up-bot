@@ -41,6 +41,7 @@ export default function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
+            <Route path="*" element={<HomePage />} />
           </Routes>
         </main>
       </div>
