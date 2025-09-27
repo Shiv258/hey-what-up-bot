@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
 import { ThemeProvider } from "@/components/common/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import Header from "@/components/common/header";
@@ -16,6 +17,9 @@ import PrivacyPage from "@/app/privacy/page";
 import TermsPage from "@/app/terms/page";
 
 export default function App() {
+  useEffect(() => {
+    console.log('[App] Mounted');
+  }, []);
   return (
     <ThemeProvider
       attribute="class"
