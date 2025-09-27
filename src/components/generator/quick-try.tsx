@@ -1,9 +1,6 @@
 
-"use client";
-
 import { CHARACTERS } from "@/lib/constants";
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export function QuickTry() {
@@ -18,12 +15,11 @@ export function QuickTry() {
           <Card key={char.name} className="overflow-hidden group text-center transform transition-all hover:-translate-y-2 hover:shadow-2xl">
             <CardContent className="p-0">
                 <div className="relative w-full aspect-[3/4]">
-                    <Image
+                    <img
                       src={char.image}
                       alt={char.name}
-                      fill
                       className={cn(
-                        "transition-transform group-hover:scale-110",
+                        "w-full h-full transition-transform group-hover:scale-110",
                         char.name === 'Kaira' ? 'object-contain' : 'object-cover'
                       )}
                       data-ai-hint={char['data-ai-hint']}

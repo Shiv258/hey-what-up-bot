@@ -1,6 +1,4 @@
 
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { VideoPlayer } from './video-player';
 import { Button } from '../ui/button';
@@ -9,8 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { useNavigate } from 'react-router-dom';
 
 interface WebhookResponseItem {
     "video "?: string;
@@ -19,7 +16,7 @@ interface WebhookResponseItem {
 }
 
 export function ResultsDisplay({ resultData }: { resultData: any[] | null }) {
-    const router = useRouter();
+    const navigate = useNavigate();
     const { toast } = useToast();
 
     const handleCopy = (url: string) => {
@@ -76,7 +73,7 @@ export function ResultsDisplay({ resultData }: { resultData: any[] | null }) {
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>
                     Could not load video generation results. The data might be missing or in the wrong format.
-                     <Button onClick={() => router.push('/')} variant="link">Go back</Button>
+                     <Button onClick={() => navigate('/')} variant="link">Go back</Button>
                 </AlertDescription>
             </Alert>
         )
@@ -113,7 +110,7 @@ export function ResultsDisplay({ resultData }: { resultData: any[] | null }) {
                         <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
                             {imageItems.map((item, index) => (
                                 <div key={`image-${index}`} className="relative aspect-square">
-                                    <Image src={item["Image URL"]!} alt={`Generated Image ${index + 1}`} fill className="object-cover rounded-lg" />
+                                    <img src={item["Image URL"]!} alt={`Generated Image ${index + 1}`} className="absolute inset-0 w-full h-full object-cover rounded-lg" />
                                 </div>
                             ))}
                         </CardContent>
@@ -179,7 +176,7 @@ export function ResultsDisplay({ resultData }: { resultData: any[] | null }) {
                         <Button size="lg" className="w-full" onClick={handleDownloadAll} disabled={!resultData}>
                             <Download className="mr-2 h-5 w-5" /> Download All (.zip)
                         </Button>
-                         <Button size="lg" variant="outline" className="w-full" onClick={() => router.push('/')}>
+                         <Button size="lg" variant="outline" className="w-full" onClick={() => navigate('/')}>
                             <CornerDownLeft className="mr-2 h-5 w-5" /> Create Another Video
                         </Button>
                     </CardFooter>

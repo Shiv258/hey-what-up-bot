@@ -2,8 +2,7 @@
 import { PageShell } from '@/components/common/page-shell';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 export default function DashboardPage() {
   const previousGenerations = [
@@ -17,7 +16,7 @@ export default function DashboardPage() {
       <div className="container py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
-          <Link href="/">
+          <Link to="/">
             <Button>New Generation</Button>
           </Link>
         </div>
@@ -29,9 +28,9 @@ export default function DashboardPage() {
           <CardContent>
             <div className="text-center py-16 border-2 border-dashed rounded-lg">
                 <p className="text-muted-foreground mb-4">View All the Generations Till Now</p>
-                <Link href="https://airtable.com/appSMvzeRgjiPtu8u/shrsx3ElFqEYN2lOi" target="_blank" rel="noopener noreferrer">
+                <a href="https://airtable.com/appSMvzeRgjiPtu8u/shrsx3ElFqEYN2lOi" target="_blank" rel="noopener noreferrer">
                     <Button>Click here to see!</Button>
-                </Link>
+                </a>
             </div>
           </CardContent>
         </Card>
@@ -45,7 +44,7 @@ export default function DashboardPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {previousGenerations.map(gen => (
                         <div key={gen.id} className="relative aspect-[9/16] rounded-lg overflow-hidden group">
-                           <Image src={gen.src} alt={`Generated video ${gen.id}`} fill className="object-cover" data-ai-hint={gen['data-ai-hint']} />
+                           <img src={gen.src} alt={`Generated video ${gen.id}`} className="absolute inset-0 w-full h-full object-cover" data-ai-hint={gen['data-ai-hint']} />
                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                 <Button variant="outline" size="sm">View</Button>
                            </div>

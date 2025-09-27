@@ -6,7 +6,7 @@ import { QuickTry } from "@/components/generator/quick-try";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { Vortex } from "@/components/ui/vortex";
 import { FeaturedVideos } from "@/components/generator/featured-videos";
 
@@ -47,9 +47,9 @@ export default function HomePage() {
               <CardContent>
                 <div className="text-center py-8 border-2 border-dashed rounded-lg">
                     <p className="text-muted-foreground mb-4">View All the Generations Till Now</p>
-                    <Link href="https://airtable.com/appSMvzeRgjiPtu8u/shrsx3ElFqEYN2lOi" target="_blank" rel="noopener noreferrer">
+                    <a href="https://airtable.com/appSMvzeRgjiPtu8u/shrsx3ElFqEYN2lOi" target="_blank" rel="noopener noreferrer">
                         <Button>Click here to see!</Button>
-                    </Link>
+                    </a>
                 </div>
               </CardContent>
             </Card>

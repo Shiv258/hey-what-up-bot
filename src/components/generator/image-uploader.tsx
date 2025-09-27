@@ -1,12 +1,9 @@
-"use client";
-
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { UploadCloud, X, Image as ImageIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { MAX_FILE_SIZE_MB, MAX_FILE_SIZE_BYTES } from "@/lib/constants";
-import Image from "next/image";
 
 interface ImageUploaderProps {
   onFileSelect: (file: File | null) => void;
@@ -55,7 +52,7 @@ export function ImageUploader({ onFileSelect }: ImageUploaderProps) {
   if (preview) {
     return (
       <div className="relative group w-full aspect-square border-2 border-dashed rounded-lg p-2">
-        <Image src={preview} alt="Image preview" fill className="object-cover rounded-md" />
+        <img src={preview} alt="Image preview" className="absolute inset-0 w-full h-full object-cover rounded-md" />
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-md">
           <Button variant="destructive" size="icon" onClick={removeImage}>
             <X className="h-4 w-4" />

@@ -1,5 +1,5 @@
 
-"use client";
+
 
 import { ResultsDisplay } from "@/components/results/results-display";
 import { PageShell } from '@/components/common/page-shell';
@@ -7,13 +7,13 @@ import { Result } from "@/lib/store";
 import { useEffect, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Loader, ExternalLink } from "lucide-react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 export default function ResultPage({ params }: { params: { id: string } }) {
     const { id: jobId } = params;
-    const router = useRouter();
+    const navigate = useNavigate();
     const [result, setResult] = useState<Result | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -90,12 +90,12 @@ export default function ResultPage({ params }: { params: { id: string } }) {
                             <p className="text-sm text-muted-foreground">Time Remaining</p>
                         </div>
                         <div className="mt-6">
-                             <Link href="https://airtable.com/appSMvzeRgjiPtu8u/shrsx3ElFqEYN2lOi" target="_blank" rel="noopener noreferrer">
+                             <a href="https://airtable.com/appSMvzeRgjiPtu8u/shrsx3ElFqEYN2lOi" target="_blank" rel="noopener noreferrer">
                                 <Button variant="outline">
                                     Check Generation Status on Airtable
                                     <ExternalLink className="ml-2 h-4 w-4" />
                                 </Button>
-                             </Link>
+                             </a>
                              <p className="text-xs text-muted-foreground mt-2">Here is your Generation, it will appear here once ready.</p>
                         </div>
                     </div>
@@ -112,7 +112,7 @@ export default function ResultPage({ params }: { params: { id: string } }) {
                         <AlertTitle>Generation Failed</AlertTitle>
                         <AlertDescription>
                             <p>{error}</p>
-                            <Button onClick={() => router.push('/')} variant="link" className="pl-0">Go back and try again</Button>
+                            <Button onClick={() => navigate('/')} variant="link" className="pl-0">Go back and try again</Button>
                         </AlertDescription>
                     </Alert>
                 </div>

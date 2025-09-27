@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Select,
   SelectContent,
@@ -9,7 +7,6 @@ import {
 } from "@/components/ui/select";
 import { CHARACTERS } from "@/lib/constants";
 import type { CharacterName } from "@/lib/constants";
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface CharacterSelectorProps {
@@ -31,7 +28,7 @@ export function CharacterSelector({ value, onValueChange, disabled }: CharacterS
           {CHARACTERS.map((character) => (
             <SelectItem key={character.name} value={character.name}>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={character.preview}
                   alt={character.name}
                   width={32}

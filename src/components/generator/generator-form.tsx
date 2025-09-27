@@ -1,5 +1,5 @@
 
-"use client";
+
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -21,7 +21,8 @@ import { Sparkles, DollarSign } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { generateVideo } from "@/app/generate/actions";
+import { generateVideo } from "@/actions/generate-video";
+import { useNavigate } from "react-router-dom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,6 +36,7 @@ import {
 
 export function GeneratorForm() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -54,14 +56,24 @@ export function GeneratorForm() {
  const onSubmit = async (values: GeneratorFormValues) => {
     setIsSubmitting(true);
     toast({
-      title: 'Redirecting to results page...',
+      title: 'Starting video generation...',
       description: 'Your video generation has started. You will be redirected shortly.',
     });
 
     try {
-        await generateVideo(values);
+        const result = await generateVideo(values);
         
-        // The action will redirect, so this part will likely not be reached unless there's an error before the redirect.
+        if (result.error) {
+            toast({
+                title: 'Generation Failed',
+                description: result.error,
+                variant: 'destructive',
+            });
+            setIsSubmitting(false);
+        } else if (result.jobId) {
+            // Navigate to the results page
+            navigate(`/results/${result.jobId}`);
+        }
     } catch (e) {
         const err = e instanceof Error ? e.message : 'An unknown error occurred.';
         toast({
