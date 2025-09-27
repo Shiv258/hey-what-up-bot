@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 export default function SignupPage() {
   return (
@@ -26,7 +26,7 @@ export default function SignupPage() {
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
                 <Button className="w-full">Create Account</Button>
-                <p className="text-sm text-muted-foreground">Already have an account? <Link href="/login" className="text-primary hover:underline">Sign In</Link></p>
+                <p className="text-sm text-muted-foreground">Already have an account? <Link to="/login" className="text-primary hover:underline">Sign In</Link></p>
             </CardFooter>
         </Card>
       </div>
