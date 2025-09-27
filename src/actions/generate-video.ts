@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { CharacterSchema } from "@/ai/schemas/character";
-import { createResult } from "@/lib/store";
+import { createResult } from "@/lib/supabase-store";
 
 // This defines the expected input from the form.
 const inputSchema = z.object({
@@ -35,8 +35,9 @@ export async function generateVideo(input: GenerateVideoInput): Promise<Generate
     const webhookUrl = "https://n8n.srv905291.hstgr.cloud/webhook/e88fd9ee-b07d-4ee7-8621-90ce2253a7b4";
     const params = new URLSearchParams();
     
-    // 3. Pass the jobId to the webhook so it can send it back later.
-    params.append("jobId", jobId); 
+    // 3. Pass the jobId to the webhook so it can send it back later - updated to use Supabase webhook
+    params.append("jobId", jobId);
+    params.append("webhookUrl", "https://ojffuyzursflvqojuuql.supabase.co/functions/v1/webhook-handler");
 
     // If an image is uploaded, we fall back to 'Kaira' to ensure the URL is not too long.
     // Otherwise, we use the selected character.

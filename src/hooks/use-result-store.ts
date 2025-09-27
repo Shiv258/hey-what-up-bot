@@ -1,6 +1,6 @@
 
 import { create } from 'zustand';
-import { getResult } from '@/lib/store';
+import { getResult } from '@/lib/supabase-store';
 
 export type ResultStatus = 'processing' | 'success' | 'error';
 
@@ -9,8 +9,8 @@ export interface Result {
     status: ResultStatus;
     data?: any;
     error?: string;
-    createdAt: Date;
-    updatedAt: Date;
+    created_at: string;
+    updated_at: string;
 }
 
 interface ResultState {
@@ -23,7 +23,7 @@ export const useResult = create<ResultState>((set, get) => ({
     result: null,
     setResultId: (id: string) => {
         if (get().result?.id === id) return;
-        set({ result: { id, status: 'processing', createdAt: new Date(), updatedAt: new Date() } });
+        set({ result: { id, status: 'processing', created_at: new Date().toISOString(), updated_at: new Date().toISOString() } });
         get().fetchResult();
     },
     fetchResult: async () => {

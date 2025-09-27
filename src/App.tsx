@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/common/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import Header from "@/components/common/header";
-import Layout from "@/app/layout";
 
 // Import pages
 import HomePage from "@/app/page";

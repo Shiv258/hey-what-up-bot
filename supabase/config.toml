@@ -1,1 +1,7 @@
 project_id = "ojffuyzursflvqojuuql"
+
+[functions.get-job-status]
+verify_jwt = false
+
+[functions.webhook-handler] 
+verify_jwt = false

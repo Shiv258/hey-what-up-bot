@@ -3,7 +3,7 @@
 
 import { ResultsDisplay } from "@/components/results/results-display";
 import { PageShell } from '@/components/common/page-shell';
-import { Result } from "@/lib/store";
+import { Result } from "@/lib/supabase-store";
 import { useEffect, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ export default function ResultPage({ params }: { params: { id: string } }) {
 
         const pollResult = async () => {
             try {
-                const response = await fetch(`/api/results/${jobId}`);
+                const response = await fetch(`https://ojffuyzursflvqojuuql.supabase.co/functions/v1/get-job-status/${jobId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch results.');
                 }
