@@ -1,0 +1,77 @@
+
+"use server";
+
+import { z } from "zod";
+import { CharacterSchema } from "@/ai/schemas/character";
+import { redirect } from 'next/navigation';
+import { createResult } from "@/lib/store";
+
+// This defines the expected input from the form.
+const inputSchema = z.object({
+  character: CharacterSchema.nullable(),
+  script: z.string(),
+  inputImageUrl: z.string().nullable(),
+});
+
+export type GenerateVideoInput = z.infer<typeof inputSchema>;
+export type GenerateVideoOutput = {
+    error?: string;
+}
+
+/**
+ * Triggers the n8n webhook with character and script data,
+ * then immediately redirects to the results page for polling.
+ */
+export async function generateVideo(input: GenerateVideoInput): Promise<GenerateVideoOutput> {
+  const validatedInput = inputSchema.safeParse(input);
+  if (!validatedInput.success) {
+    return { error: `Invalid input: ${validatedInput.error.message}` };
+  }
+
+  // 1. Generate a unique ID for this job.
+  const jobId = Date.now().toString();
+
+  try {
+    // 2. Create a "processing" record in our store.
+    await createResult(jobId);
+
+    const webhookUrl = "https://n8n.srv905291.hstgr.cloud/webhook/e88fd9ee-b07d-4ee7-8621-90ce2253a7b4";
+    const params = new URLSearchParams();
+    
+    // 3. Pass the jobId to the webhook so it can send it back later.
+    params.append("jobId", jobId); 
+
+    // If an image is uploaded, we fall back to 'Kaira' to ensure the URL is not too long.
+    // Otherwise, we use the selected character.
+    if (validatedInput.data.inputImageUrl) {
+        params.append("character", "Kaira");
+        params.append("imageUrl", validatedInput.data.inputImageUrl);
+    } else if (validatedInput.data.character) {
+      params.append("character", validatedInput.data.character);
+    }
+
+    if (validatedInput.data.script) {
+      params.append("script", validatedInput.data.script);
+    }
+    
+    const finalUrl = `${webhookUrl}?${params.toString()}`;
+    
+    // 4. Trigger the webhook but DO NOT wait for the response (fire-and-forget).
+    fetch(finalUrl, {
+      method: 'GET',
+    }).catch(e => {
+        // Log the error on the server if the trigger fails, but don't block the user.
+        console.error(`Failed to trigger webhook for job ${jobId}:`, e);
+    });
+
+  } catch (error) {
+    console.error("Error in generateVideo action:", error);
+    // Even if something fails before the redirect, we can show an error on the results page.
+    // This path should ideally not be taken.
+    const message = error instanceof Error ? error.message : "An unknown error occurred.";
+    redirect(`/results/${jobId}?error=${encodeURIComponent(message)}`);
+  }
+
+  // 5. Immediately redirect to the results page.
+  redirect(`/results/${jobId}`);
+}
