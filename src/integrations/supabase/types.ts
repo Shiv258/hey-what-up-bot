@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      job_counters: {
+        Row: {
+          created_at: string
+          current_count: number
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_count?: number
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_count?: number
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       video_generation_jobs: {
         Row: {
           created_at: string
@@ -46,7 +67,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_next_job_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
