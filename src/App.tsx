@@ -7,6 +7,7 @@ import Header from "@/components/common/header";
 // Import pages
 import HomePage from "@/app/page";
 import DashboardPage from "@/app/dashboard/page";
+import GenerationsPage from "@/app/generations/page";
 import ResultsPageWrapper from "@/components/results/results-page-wrapper";
 import SettingsPage from "@/app/settings/page";
 import LoginPage from "@/app/login/page";
@@ -33,6 +34,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/generations" element={<GenerationsPage />} />
             <Route path="/results/:id" element={<ResultsPageWrapper />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/login" element={<LoginPage />} />

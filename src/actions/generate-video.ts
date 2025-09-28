@@ -37,8 +37,24 @@ export async function generateVideo(input: GenerateVideoInput): Promise<Generate
   const jobId = jobIdResult;
 
   try {
-    // 2. Create a "processing" record in our store.
+    // 2. Create a "processing" record in our store with metadata.
     await createResult(jobId);
+
+    // Store generation metadata
+    const metadata = {
+      character: validatedInput.data.inputImageUrl ? "Kaira" : validatedInput.data.character,
+      script: validatedInput.data.script,
+      inputImageUrl: validatedInput.data.inputImageUrl,
+      timestamp: new Date().toISOString()
+    };
+
+    // Update the record with metadata
+    await supabase
+      .from('video_generation_jobs')
+      .update({ 
+        data: { metadata } 
+      })
+      .eq('id', jobId);
 
     const webhookUrl = "https://n8n.srv905291.hstgr.cloud/webhook/e88fd9ee-b07d-4ee7-8621-90ce2253a7b4";
     const params = new URLSearchParams();
