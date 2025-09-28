@@ -1,6 +1,5 @@
 
 
-import React from "react";
 import { ResultsDisplay } from "@/components/results/results-display";
 import { PageShell } from '@/components/common/page-shell';
 import { Result } from "@/lib/supabase-store";
@@ -139,14 +138,15 @@ export default function ResultPage({ params }: { params: { id: string } }) {
 
                             {/* Current Stage */}
                             <div className="bg-card border rounded-lg p-6 space-y-4">
-                                <div className="flex items-center justify-center gap-3">
-                                    {React.createElement(GENERATION_STAGES[currentStage]?.icon || Clock, { 
-                                        className: "h-6 w-6 text-primary" 
-                                    })}
-                                    <span className="text-xl font-semibold">
-                                        {GENERATION_STAGES[currentStage]?.name || 'Processing'}
-                                    </span>
-                                </div>
+                            <div className="flex items-center justify-center gap-3">
+                                {(() => {
+                                    const IconComponent = GENERATION_STAGES[currentStage]?.icon || Clock;
+                                    return <IconComponent className="h-6 w-6 text-primary" />;
+                                })()}
+                                <span className="text-xl font-semibold">
+                                    {GENERATION_STAGES[currentStage]?.name || 'Processing'}
+                                </span>
+                            </div>
                                 <p className="text-muted-foreground">
                                     Please keep this page open while we process your video.
                                 </p>
