@@ -104,8 +104,6 @@ export default function ResultPage({ params }: { params: { id: string } }) {
         return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
     };
 
-    const estimatedTotal = GENERATION_STAGES.reduce((sum, stage) => sum + stage.duration, 0) * 60;
-    const timeRemaining = Math.max(0, estimatedTotal - timeElapsed);
 
     if (isLoading) {
         return (
@@ -130,9 +128,8 @@ export default function ResultPage({ params }: { params: { id: string } }) {
                             {/* Progress Bar */}
                             <div className="space-y-4">
                                 <Progress value={progress} className="h-3" />
-                                <div className="flex justify-between text-sm text-muted-foreground">
+                                <div className="flex justify-center text-sm text-muted-foreground">
                                     <span>{Math.round(progress)}% Complete</span>
-                                    <span>{formatTime(timeRemaining)} remaining</span>
                                 </div>
                             </div>
 
