@@ -46,19 +46,6 @@ export function ResultsDisplay({ resultData }: { resultData: WebhookResponseData
             });
         }
 
-        // Download broll images
-        if (resultData.broll_images) {
-            resultData.broll_images.forEach((url, index) => {
-                downloadPromises.push(
-                    fetch(url)
-                        .then(response => response.blob())
-                        .then(blob => {
-                            zip.file(`broll-images/broll-image-${index + 1}.jpg`, blob);
-                        })
-                        .catch(e => console.error(`Failed to download broll image ${index + 1}:`, e))
-                );
-            });
-        }
 
         // Download lipsync videos
         if (resultData.lipsync_videos) {
@@ -123,7 +110,6 @@ export function ResultsDisplay({ resultData }: { resultData: WebhookResponseData
     const hasContent = Boolean(
         resultData.broll_videos?.length || 
         resultData.lipsync_videos?.length || 
-        resultData.broll_images?.length || 
         resultData.lipsync_images?.length || 
         resultData.full_audio
     );
@@ -246,40 +232,6 @@ export function ResultsDisplay({ resultData }: { resultData: WebhookResponseData
                         </Card>
                     )}
 
-                    {/* B-Roll Images */}
-                    {resultData.broll_images && resultData.broll_images.length > 0 && (
-                        <Card className="overflow-hidden shadow-xl">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Image className="h-5 w-5" />
-                                    B-Roll Images ({resultData.broll_images.length})
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                {resultData.broll_images.map((imageUrl, index) => (
-                                    <div key={`broll-image-${index}`} className="space-y-2">
-                                        <div className="relative aspect-square">
-                                            <img 
-                                                src={imageUrl} 
-                                                alt={`B-Roll Image ${index + 1}`} 
-                                                className="absolute inset-0 w-full h-full object-cover rounded-lg" 
-                                            />
-                                        </div>
-                                        <div className="flex gap-1">
-                                            <Button variant="outline" size="sm" asChild className="flex-1">
-                                                <a href={imageUrl} download>
-                                                    <Download className="h-3 w-3" />
-                                                </a>
-                                            </Button>
-                                            <Button variant="outline" size="sm" onClick={() => handleCopy(imageUrl)}>
-                                                <Copy className="h-3 w-3" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-                    )}
 
                     {/* Full Audio */}
                     {resultData.full_audio && (

@@ -17,7 +17,7 @@ export function VideoPlayer({ src, poster }: VideoPlayerProps) {
                 ref={videoRef}
                 src={src}
                 poster={poster}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 loop
                 playsInline
                 controls
