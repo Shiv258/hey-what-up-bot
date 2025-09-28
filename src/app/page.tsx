@@ -39,19 +39,19 @@ export default function HomePage() {
         </div>
         
         <div className="container pb-16 lg:pb-24">
-           <Card>
-              <CardHeader>
-                <CardTitle>View All Generations</CardTitle>
-                <CardDescription>All of your generated videos are stored in our Airtable. Click the button below to see your full history.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 border-2 border-dashed rounded-lg">
-                    <p className="text-muted-foreground mb-4">View All the Generations Till Now</p>
-                    <a href="https://airtable.com/appSMvzeRgjiPtu8u/shrsx3ElFqEYN2lOi" target="_blank" rel="noopener noreferrer">
-                        <Button>Click here to see!</Button>
-                    </a>
-                </div>
-              </CardContent>
+            <Card>
+               <CardHeader>
+                 <CardTitle>View All Generations</CardTitle>
+                 <CardDescription>All of your generated videos are stored securely. Click the button below to see your full history.</CardDescription>
+               </CardHeader>
+               <CardContent>
+                 <div className="text-center py-8 border-2 border-dashed rounded-lg">
+                     <p className="text-muted-foreground mb-4">View All the Generations Till Now</p>
+                     <Link to="/generations">
+                         <Button>Click here to see!</Button>
+                     </Link>
+                 </div>
+               </CardContent>
             </Card>
         </div>
 
