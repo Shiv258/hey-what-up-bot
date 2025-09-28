@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { CharacterSchema } from "@/ai/schemas/character";
 import { createResult } from "@/lib/supabase-store";
+import { supabase } from "@/integrations/supabase/client";
 
 // This defines the expected input from the form.
 const inputSchema = z.object({
@@ -25,8 +26,15 @@ export async function generateVideo(input: GenerateVideoInput): Promise<Generate
     return { error: `Invalid input: ${validatedInput.error.message}` };
   }
 
-  // 1. Generate a unique ID for this job.
-  const jobId = Date.now().toString();
+  // 1. Generate a sequential job ID using the database function.
+  const { data: jobIdResult, error: jobIdError } = await supabase.rpc('get_next_job_id');
+  
+  if (jobIdError || !jobIdResult) {
+    console.error('Error generating job ID:', jobIdError);
+    return { error: 'Failed to generate job ID' };
+  }
+  
+  const jobId = jobIdResult;
 
   try {
     // 2. Create a "processing" record in our store.
