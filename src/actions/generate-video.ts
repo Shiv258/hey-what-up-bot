@@ -10,6 +10,7 @@ const inputSchema = z.object({
   inputImageUrl: z.string().nullable(),
   contentId: z.string().optional(),
   externalJobId: z.string().optional(),
+  callbackUrl: z.string().optional(),
 });
 
 export type GenerateVideoInput = z.infer<typeof inputSchema>;
@@ -50,6 +51,7 @@ export async function generateVideo(input: GenerateVideoInput): Promise<Generate
       timestamp: new Date().toISOString(),
       content_id: validatedInput.data.contentId,
       external_job_id: validatedInput.data.externalJobId,
+      callback_url: validatedInput.data.callbackUrl,
     };
 
     // Update the record with metadata

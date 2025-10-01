@@ -10,6 +10,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Vortex } from "@/components/ui/vortex";
 import { FeaturedVideos } from "@/components/generator/featured-videos";
 import { CharacterSchema, type Character } from "@/ai/schemas/character";
+import { useEffect } from "react";
 
 export default function HomePage() {
   const [searchParams] = useSearchParams();
@@ -19,6 +20,18 @@ export default function HomePage() {
   const urlCharacter = searchParams.get('character');
   const urlContentId = searchParams.get('content_id');
   const urlJobId = searchParams.get('job_id');
+  const urlCallbackUrl = searchParams.get('callback_url');
+  
+  // Debug logging
+  useEffect(() => {
+    console.log('🔍 URL Parameters Debug:', {
+      script: urlScript,
+      character: urlCharacter,
+      content_id: urlContentId,
+      job_id: urlJobId,
+      callback_url: urlCallbackUrl
+    });
+  }, [urlScript, urlCharacter, urlContentId, urlJobId, urlCallbackUrl]);
   
   // Decode and validate parameters
   const defaultScript = urlScript ? decodeURIComponent(urlScript) : undefined;
@@ -27,6 +40,7 @@ export default function HomePage() {
     : undefined;
   const contentId = urlContentId || undefined;
   const externalJobId = urlJobId || undefined;
+  const callbackUrl = urlCallbackUrl || undefined;
 
   return (
     <PageShell>
@@ -57,6 +71,7 @@ export default function HomePage() {
               defaultCharacter={defaultCharacter}
               contentId={contentId}
               externalJobId={externalJobId}
+              callbackUrl={callbackUrl}
             />
         </div>
         

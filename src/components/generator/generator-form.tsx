@@ -40,13 +40,15 @@ interface GeneratorFormProps {
   defaultCharacter?: Character;
   contentId?: string;
   externalJobId?: string;
+  callbackUrl?: string;
 }
 
 export function GeneratorForm({ 
   defaultScript, 
   defaultCharacter, 
   contentId, 
-  externalJobId 
+  externalJobId,
+  callbackUrl
 }: GeneratorFormProps) {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -77,7 +79,8 @@ export function GeneratorForm({
         const result = await generateVideo({
           ...values,
           contentId,
-          externalJobId
+          externalJobId,
+          callbackUrl
         });
         
         if (result.error) {

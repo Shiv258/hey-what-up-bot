@@ -100,11 +100,11 @@ serve(async (req: any) => {
     }
 
     // Handle content_id from metadata (new URL parameter integration)
-    if (!fetchError && jobData?.data?.metadata?.content_id) {
+    if (!fetchError && jobData?.data?.metadata?.content_id && jobData?.data?.metadata?.callback_url) {
       console.log(`Job ${jobId} has content_id in metadata, sending callback to external SaaS...`);
       
       try {
-        const callbackUrl = 'https://vkfmtrovrxgalhekzfsu.supabase.co/functions/v1/video-generation-callback';
+        const callbackUrl = jobData.data.metadata.callback_url;
         const callbackPayload = {
           content_id: jobData.data.metadata.content_id,
           job_id: jobData.data.metadata.external_job_id || jobId,
@@ -112,7 +112,7 @@ serve(async (req: any) => {
           video_url: resultData.videoUrl || resultData.video_url || null
         };
 
-        console.log('Sending callback to external SaaS:', callbackUrl, callbackPayload);
+        console.log('Sending callback to:', callbackUrl, callbackPayload);
 
         const callbackResponse = await fetch(callbackUrl, {
           method: 'POST',
@@ -167,9 +167,9 @@ serve(async (req: any) => {
         .eq('id', jobId)
         .single();
 
-      if (jobData?.data?.metadata?.content_id) {
+      if (jobData?.data?.metadata?.content_id && jobData?.data?.metadata?.callback_url) {
         try {
-          await fetch('https://vkfmtrovrxgalhekzfsu.supabase.co/functions/v1/video-generation-callback', {
+          await fetch(jobData.data.metadata.callback_url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
