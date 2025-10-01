@@ -8,6 +8,8 @@ const inputSchema = z.object({
   character: CharacterSchema.nullable(),
   script: z.string(),
   inputImageUrl: z.string().nullable(),
+  contentId: z.string().optional(),
+  externalJobId: z.string().optional(),
 });
 
 export type GenerateVideoInput = z.infer<typeof inputSchema>;
@@ -40,12 +42,14 @@ export async function generateVideo(input: GenerateVideoInput): Promise<Generate
     // 2. Create a "processing" record in our store with metadata.
     await createResult(jobId);
 
-    // Store generation metadata
+    // Store generation metadata (including external integration params)
     const metadata = {
       character: validatedInput.data.inputImageUrl ? "Kaira" : validatedInput.data.character,
       script: validatedInput.data.script,
       inputImageUrl: validatedInput.data.inputImageUrl,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      content_id: validatedInput.data.contentId,
+      external_job_id: validatedInput.data.externalJobId,
     };
 
     // Update the record with metadata

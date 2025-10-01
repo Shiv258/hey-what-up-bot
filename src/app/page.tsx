@@ -6,11 +6,28 @@ import { QuickTry } from "@/components/generator/quick-try";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Vortex } from "@/components/ui/vortex";
 import { FeaturedVideos } from "@/components/generator/featured-videos";
+import { CharacterSchema, type Character } from "@/ai/schemas/character";
 
 export default function HomePage() {
+  const [searchParams] = useSearchParams();
+  
+  // Read URL parameters for external integration
+  const urlScript = searchParams.get('script');
+  const urlCharacter = searchParams.get('character');
+  const urlContentId = searchParams.get('content_id');
+  const urlJobId = searchParams.get('job_id');
+  
+  // Decode and validate parameters
+  const defaultScript = urlScript ? decodeURIComponent(urlScript) : undefined;
+  const defaultCharacter = urlCharacter && CharacterSchema.safeParse(urlCharacter).success 
+    ? (urlCharacter as Character) 
+    : undefined;
+  const contentId = urlContentId || undefined;
+  const externalJobId = urlJobId || undefined;
+
   return (
     <PageShell>
       <div className="relative isolate">
@@ -35,7 +52,12 @@ export default function HomePage() {
         </Vortex>
 
         <div className="container pb-16 lg:pb-24">
-            <GeneratorForm />
+            <GeneratorForm 
+              defaultScript={defaultScript}
+              defaultCharacter={defaultCharacter}
+              contentId={contentId}
+              externalJobId={externalJobId}
+            />
         </div>
         
         <div className="container pb-16 lg:pb-24">

@@ -60,13 +60,14 @@ serve(async (req: any) => {
 
     console.log(`Successfully updated result for job ${jobId}`);
 
-    // Check if this job needs a callback to another project
+    // Check if this job needs a callback to another project or external SaaS
     const { data: jobData, error: fetchError } = await supabase
       .from('video_generation_jobs')
       .select('data')
       .eq('id', jobId)
       .single();
 
+    // Handle callback_project_id (old integration)
     if (!fetchError && jobData?.data?.callback_project_id) {
       console.log(`Job ${jobId} has callback_project_id, sending callback...`);
       
@@ -98,6 +99,37 @@ serve(async (req: any) => {
       }
     }
 
+    // Handle content_id from metadata (new URL parameter integration)
+    if (!fetchError && jobData?.data?.metadata?.content_id) {
+      console.log(`Job ${jobId} has content_id in metadata, sending callback to external SaaS...`);
+      
+      try {
+        const callbackUrl = 'https://vkfmtrovrxgalhekzfsu.supabase.co/functions/v1/video-generation-callback';
+        const callbackPayload = {
+          content_id: jobData.data.metadata.content_id,
+          job_id: jobData.data.metadata.external_job_id || jobId,
+          status: 'success',
+          video_url: resultData.videoUrl || resultData.video_url || null
+        };
+
+        console.log('Sending callback to external SaaS:', callbackUrl, callbackPayload);
+
+        const callbackResponse = await fetch(callbackUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(callbackPayload)
+        });
+
+        if (!callbackResponse.ok) {
+          console.error('External callback failed:', await callbackResponse.text());
+        } else {
+          console.log('External callback sent successfully');
+        }
+      } catch (callbackError) {
+        console.error('Error sending external callback:', callbackError);
+      }
+    }
+
     return new Response(
       JSON.stringify({ message: `Successfully updated result for job ${jobId}` }), 
       { 
@@ -118,6 +150,7 @@ serve(async (req: any) => {
         Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
       );
       
+      // Update local job status to error
       await supabase
         .from('video_generation_jobs')
         .update({
@@ -126,6 +159,29 @@ serve(async (req: any) => {
           updated_at: new Date().toISOString()
         })
         .eq('id', jobId);
+
+      // Check if we need to send failure callback to external SaaS
+      const { data: jobData } = await supabase
+        .from('video_generation_jobs')
+        .select('data')
+        .eq('id', jobId)
+        .single();
+
+      if (jobData?.data?.metadata?.content_id) {
+        try {
+          await fetch('https://vkfmtrovrxgalhekzfsu.supabase.co/functions/v1/video-generation-callback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              content_id: jobData.data.metadata.content_id,
+              job_id: jobData.data.metadata.external_job_id || jobId,
+              status: 'failed'
+            })
+          });
+        } catch (callbackError) {
+          console.error('Failed to send error callback:', callbackError);
+        }
+      }
     }
 
     return new Response(

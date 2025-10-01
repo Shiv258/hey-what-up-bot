@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { generateVideo } from "@/actions/generate-video";
 import { useNavigate } from "react-router-dom";
+import type { Character } from "@/ai/schemas/character";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,7 +35,19 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function GeneratorForm() {
+interface GeneratorFormProps {
+  defaultScript?: string;
+  defaultCharacter?: Character;
+  contentId?: string;
+  externalJobId?: string;
+}
+
+export function GeneratorForm({ 
+  defaultScript, 
+  defaultCharacter, 
+  contentId, 
+  externalJobId 
+}: GeneratorFormProps) {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
@@ -43,9 +56,9 @@ export function GeneratorForm() {
   const form = useForm<GeneratorFormValues>({
     resolver: zodResolver(GeneratorSchema),
     defaultValues: {
-      character: null,
+      character: defaultCharacter || null,
       inputImageUrl: null,
-      script: "",
+      script: defaultScript || "",
       imageFile: undefined,
     },
     mode: "onChange",
@@ -61,7 +74,11 @@ export function GeneratorForm() {
     });
 
     try {
-        const result = await generateVideo(values);
+        const result = await generateVideo({
+          ...values,
+          contentId,
+          externalJobId
+        });
         
         if (result.error) {
             toast({
