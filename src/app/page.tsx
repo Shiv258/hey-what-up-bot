@@ -34,13 +34,27 @@ export default function HomePage() {
   }, [urlScript, urlCharacter, urlContentId, urlJobId, urlCallbackUrl]);
   
   // Decode and validate parameters
-  const defaultScript = urlScript ? decodeURIComponent(urlScript) : undefined;
-  const defaultCharacter = urlCharacter && CharacterSchema.safeParse(urlCharacter).success 
-    ? (urlCharacter as Character) 
+  const defaultScript = urlScript
+    ? decodeURIComponent(urlScript.replace(/\+/g, " "))
     : undefined;
+
+  const characterOptions: Character[] = ['Kaira', 'Aisha', 'Mayra', 'Bailey'];
+  const normalizedChar = urlCharacter
+    ? characterOptions.find((c) => c.toLowerCase() === urlCharacter.toLowerCase())
+    : undefined;
+  const defaultCharacter = normalizedChar;
+
   const contentId = urlContentId || undefined;
   const externalJobId = urlJobId || undefined;
   const callbackUrl = urlCallbackUrl || undefined;
+
+  // Persist external identifiers for downstream pages and add debug
+  useEffect(() => {
+    if (contentId) sessionStorage.setItem('content_id', contentId);
+    if (externalJobId) sessionStorage.setItem('job_id', externalJobId);
+    if (callbackUrl) sessionStorage.setItem('callback_url', callbackUrl);
+    console.debug('✅ Defaults applied:', { defaultScript, defaultCharacter, contentId, externalJobId, callbackUrl });
+  }, [contentId, externalJobId, callbackUrl, defaultScript, defaultCharacter]);
 
   return (
     <PageShell>
@@ -67,6 +81,7 @@ export default function HomePage() {
 
         <div className="container pb-16 lg:pb-24">
             <GeneratorForm 
+              key={searchParams.toString()}
               defaultScript={defaultScript}
               defaultCharacter={defaultCharacter}
               contentId={contentId}

@@ -18,7 +18,7 @@ import { ImageUploader } from "./image-uploader";
 import { ScriptEditor } from "./script-editor";
 import { Separator } from "../ui/separator";
 import { Sparkles, DollarSign } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { generateVideo } from "@/actions/generate-video";
@@ -68,7 +68,23 @@ export function GeneratorForm({
 
   const { watch, setValue, getValues } = form;
 
- const onSubmit = async (values: GeneratorFormValues) => {
+  // Reset form when defaults change (e.g., URL params updated)
+  useEffect(() => {
+    console.debug('🔄 Resetting form with defaults:', { defaultScript, defaultCharacter });
+    form.reset({
+      character: defaultCharacter || null,
+      inputImageUrl: null,
+      script: defaultScript || "",
+      imageFile: undefined,
+    });
+    // Clear any existing image preview when new defaults arrive
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+    setImagePreviewUrl(null);
+  }, [defaultScript, defaultCharacter]);
+
+  const onSubmit = async (values: GeneratorFormValues) => {
     setIsSubmitting(true);
     toast({
       title: 'Starting video generation...',
