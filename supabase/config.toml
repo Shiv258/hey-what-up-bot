@@ -1,5 +1,8 @@
 project_id = "ojffuyzursflvqojuuql"
 
+[functions.generate-video-api]
+verify_jwt = false
+
 [functions.get-job-status]
 verify_jwt = false
 

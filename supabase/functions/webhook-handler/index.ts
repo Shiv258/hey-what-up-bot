@@ -59,6 +59,45 @@ serve(async (req: any) => {
     }
 
     console.log(`Successfully updated result for job ${jobId}`);
+
+    // Check if this job needs a callback to another project
+    const { data: jobData, error: fetchError } = await supabase
+      .from('video_generation_jobs')
+      .select('data')
+      .eq('id', jobId)
+      .single();
+
+    if (!fetchError && jobData?.data?.callback_project_id) {
+      console.log(`Job ${jobId} has callback_project_id, sending callback...`);
+      
+      try {
+        const callbackUrl = `https://${jobData.data.callback_project_id}.supabase.co/functions/v1/video-generation-callback`;
+        const callbackPayload = {
+          content_id: jobData.data.content_id,
+          status: 'success',
+          video_url: resultData.videoUrl || resultData.video_url || null,
+          job_id: jobId,
+          result_data: resultData
+        };
+
+        console.log('Sending callback to:', callbackUrl, callbackPayload);
+
+        const callbackResponse = await fetch(callbackUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(callbackPayload)
+        });
+
+        if (!callbackResponse.ok) {
+          console.error('Callback failed:', await callbackResponse.text());
+        } else {
+          console.log('Callback sent successfully');
+        }
+      } catch (callbackError) {
+        console.error('Error sending callback:', callbackError);
+      }
+    }
+
     return new Response(
       JSON.stringify({ message: `Successfully updated result for job ${jobId}` }), 
       { 
