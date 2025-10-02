@@ -15,16 +15,28 @@ import { useEffect } from "react";
 export default function HomePage() {
   const [searchParams] = useSearchParams();
   
-  // Read URL parameters for external integration
-  const urlScript = searchParams.get('script');
-  const urlCharacter = searchParams.get('character');
-  const urlContentId = searchParams.get('content_id');
-  const urlJobId = searchParams.get('job_id');
-  const urlCallbackUrl = searchParams.get('callback_url');
+  // Robust param getter: supports both HashRouter search and raw hash query fallback
+  const getParam = (key: string): string | null => {
+    const fromSearch = searchParams.get(key);
+    if (fromSearch !== null) return fromSearch;
+    const hash = window.location.hash || "";
+    const qIndex = hash.indexOf("?");
+    if (qIndex === -1) return null;
+    const hashParams = new URLSearchParams(hash.slice(qIndex + 1));
+    return hashParams.get(key);
+  };
+  
+  // Read URL parameters for external integration (works with `#/` or `#` styles)
+  const urlScript = getParam('script');
+  const urlCharacter = getParam('character');
+  const urlContentId = getParam('content_id');
+  const urlJobId = getParam('job_id');
+  const urlCallbackUrl = getParam('callback_url');
   
   // Debug logging
   useEffect(() => {
     console.log('🔍 URL Parameters Debug:', {
+      url: window.location.href,
       script: urlScript,
       character: urlCharacter,
       content_id: urlContentId,
