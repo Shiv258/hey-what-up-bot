@@ -45,10 +45,8 @@ export default function HomePage() {
     });
   }, [urlScript, urlCharacter, urlContentId, urlJobId, urlCallbackUrl]);
   
-  // Decode and validate parameters
-  const defaultScript = urlScript
-    ? decodeURIComponent(urlScript.replace(/\+/g, " "))
-    : undefined;
+  // URLSearchParams already decodes values, no need for decodeURIComponent
+  const defaultScript = urlScript ?? undefined;
 
   const characterOptions: Character[] = ['Kaira', 'Aisha', 'Mayra', 'Bailey'];
   const normalizedChar = urlCharacter
